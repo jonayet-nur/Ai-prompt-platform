@@ -371,7 +371,7 @@ const Navbar = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const dropdownRef = useRef(null);
   
-  // ✅ Correct way to get user
+  //  Correct way to get user
   const user = session?.user;
 
   // Close dropdown when clicking outside
@@ -387,21 +387,23 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     await authClient.signOut();
-    window.location.reload();
+    window.location.reload(); // Refresh the page to update the session state
+//    router.push("/"); // Refresh the page to update the session state    
+    
   };
 
   // Navigation links with icons
   const navLinks = user
     ? [
         { name: "Home", href: "/", icon: Home },
-        { name: "All Prompts", href: "/prompts", icon: Layers },
-        { name: "Dashboard", href: `/dashboard/${user.role}`, icon: LayoutDashboard },
-        { name: "My Prompts", href: `/dashboard/${user.role}/prompts`, icon: MessageSquare },
-        { name: "Favorites", href: `/dashboard/${user.role}/favorites`, icon: Star },
+        { name: "All Prompts", href: "/all-prompt", icon: Layers },
+        { name: "Dashboard", href: `/dashboard/${user?.role}`, icon: LayoutDashboard },
+        { name: "My Prompts", href: `/dashboard/${user?.role}/prompts`, icon: MessageSquare },
+        { name: "Favorites", href: `/dashboard/${user?.role}/favorites`, icon: Star },
       ]
     : [
         { name: "Home", href: "/", icon: Home },
-        { name: "All Prompts", href: "/prompts", icon: Layers },
+        { name: "All Prompts", href: "/all-prompt", icon: Layers },
         { name: "Trending", href: "/trending", icon: TrendingUp },
       ];
 
@@ -527,7 +529,7 @@ const Navbar = () => {
                     {/* Navigation Links in Dropdown */}
                     <div className="py-1">
                       <Link
-                        href={`/dashboard/${user.role}`}
+                        href={`/dashboard/${user?.role}`}
                         onClick={() => setDropdownOpen(false)}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition"
                       >
@@ -535,7 +537,7 @@ const Navbar = () => {
                         <span>Dashboard</span>
                       </Link>
                       <Link
-                        href={`/dashboard/${user.role}/profile`}
+                        href={`/dashboard/${user?.role}/profile`}
                         onClick={() => setDropdownOpen(false)}
                         className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-purple-50 dark:hover:bg-purple-900/20 hover:text-purple-600 dark:hover:text-purple-400 transition"
                       >

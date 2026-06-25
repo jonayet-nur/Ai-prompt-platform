@@ -301,11 +301,11 @@ const SignUp = () => {
                   {...register("role", { required: "Role is required" })}
                   className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white hover:border-pink-500/50 focus:border-pink-500/50 focus:outline-none transition-colors appearance-none cursor-pointer"
                 >
-                  <option value="attendee" className="bg-slate-900">
-                    🎫 Attendee
+                  <option value="user" className="bg-slate-900">
+                    🎫 User
                   </option>
-                  <option value="organizer" className="bg-slate-900">
-                    🎪 Organizer
+                  <option value="creator" className="bg-slate-900">
+                    🎪 Creator
                   </option>
                 </select>
                 {errors.role && (
