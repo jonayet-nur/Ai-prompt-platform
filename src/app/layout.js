@@ -5,6 +5,7 @@ import "./globals.css";
 // import Navbar from "@/Components/Navbar";
 // import Footer from "@/Components/Footer";
 import GlobalBackground from "@/Components/Globalbackground";
+// import { AuthProvider } from "../../contexts/AuthContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,11 +29,13 @@ export default function RootLayout({ children }) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col ">
-    <GlobalBackground>
+   
+     <GlobalBackground>
        {/* <Navbar></Navbar> */}
        <main> {children}</main>
        {/* <Footer></Footer> */}
     </GlobalBackground>
+   
       </body>
      
        

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from "react";
@@ -7,125 +8,94 @@ import Link from "next/link";
 import { Eye, EyeOff, Upload, User, Mail, Lock, Calendar, Users } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
+import { IoLogoGithub } from "react-icons/io";
 
 const SignUp = () => {
-    const router = useRouter()
-
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-//   const [selectedImage, setSelectedImage] = useState(null);
-//   const [previewUrl, setPreviewUrl] = useState(null);
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    watch,reset
+    reset
   } = useForm({
     defaultValues: {
       name: "",
       email: "",
       password: "",
-      role: "attendee",
-      image_url: "", 
-      
+      role: "user",
+      image: "", // changed from image_url to image
     },
   });
 
-
-
-
-  
   const onSubmit = async (formData) => {
     try {
+      setIsLoading(true);
       console.log("Submitting form data:", formData);
       
       const { data, error } = await authClient.signUp.email({
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        image: formData.image_url,
-        callbackURL: "/" // Optional: redirect after email verification
+        image: formData.image || "", // Make sure image is properly passed
+        role: formData.role, // This is crucial for role-based access
+        callbackURL: "/login"
       });
 
       if (error) {
-        
-        // console.error("Signup error:", error);
-        // Show error message to user
+        console.error("Signup error:", error);
         alert(error.message || "Signup failed. Please try again.");
         return;
       }
 
       console.log("Signup successful:", data);
       
-      // Reset form on success
       reset();
-    //    await authClient.signOut();
       
-      // Redirect or show success message
+      // Show role-specific success message
+      const roleMessage = formData.role === 'creator' 
+        ? '🎉 Creator account created successfully! You can now add and manage prompts.'
+        : '✅ Account created successfully!';
+      
+      alert(roleMessage);
+      
+      // Redirect to login
       router.push('/login');
-      // or
-      // toast.success('Account created successfully!');
-      alert("Account created successfully! Please check your email to verify your account.");
       
     } catch (error) {
       console.error("Unexpected error:", error);
       alert("An unexpected error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
-
-//   const onSubmit =async(data) => {
-//     const { data, error } = await authClient.signUp.email({
-//         email, // user email address
-//         password, // user password -> min 8 characters by default
-//         name, // user display name
-//         image_url, // User image URL (optional)
-//         callbackURL: "/dashboard" // A URL to redirect to after the user verifies their email (optional)
-//     },
-    
-   
-//     // console.log(data)
-//   )};
-
-//   const handleImageChange = (e) => {
-//     const file = e.target.files[0];
-//     if (file) {
-//       setSelectedImage(file);
-//       const reader = new FileReader();
-//       reader.onloadend = () => {
-//         setPreviewUrl(reader.result);
-//       };
-//       reader.readAsDataURL(file);
-//     }
-//   };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  p-4 my-15 ">
+    <div className="min-h-screen flex items-center justify-center p-4 my-15">
       <div className="w-full max-w-6xl bg-slate-900/50 backdrop-blur-xl rounded-3xl overflow-hidden shadow-2xl border border-white/5 flex flex-col md:flex-row">
         
         {/* Left Side - Background Image */}
-        <div className="hidden md:block md:w-1/2 relative min-h-[600px]">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/80 to-pink-600/80 mix-blend-multiply z-10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-slate-950/20 z-20" />
+        <div className="hidden md:block md:w-1/2 relative min-h-150">
+          <div className="absolute inset-0 bg-linear-to-r from-purple-600/80 to-pink-600/80 mix-blend-multiply z-10" />
+          <div className="absolute inset-0 bg-linear-to-t from-slate-950/80 via-transparent to-slate-950/20 z-20" />
           
-          {/* Replace with your image URL */}
           <Image
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=2070&auto=format&fit=crop"
             fill
             alt="Sign Up Background"
             className="w-full h-full object-cover"
           />
-                    
-
           
-          {/* Overlay Content */}
           <div className="absolute inset-0 z-30 flex flex-col items-center justify-center text-white p-12 text-center">
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/10">
-              <h2 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              <h2 className="text-4xl font-bold mb-4 bg-linear-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
                 Join PromptHub
               </h2>
               <p className="text-slate-200 text-lg mb-6">
@@ -246,51 +216,23 @@ const SignUp = () => {
                 )}
               </div>
 
-              {/* image url */}
+              {/* Profile Image URL */}
               <div className="flex flex-col gap-2">
-  <label className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-    <Upload size={16} />
-    Profile Image URL
-  </label>
-  <div className="relative">
-    <input
-      {...register("image_url", { 
-        required: "Image URL is required"
-      })}
-      type="url"
-      placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-      className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-pink-500/50 transition-all"
-    />
-  </div>
-</div>
+                <label className="text-sm font-semibold text-slate-300 flex items-center gap-2">
+                  <Upload size={16} />
+                  Profile Image URL
+                </label>
+                <div className="relative">
+                  <input
+                    {...register("image")}
+                    type="url"
+                    placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
+                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-pink-500/50 transition-all"
+                  />
+                </div>
+              </div>
 
-              
-
-{/*             
-               <div className="flex flex-col gap-2">
-  <label className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-    <Upload size={16} />
-    Profile Image URL
-  </label>
-  <div className="relative">
-    <input
-       {...register("image_url", { 
-                      required: "Image URL is required",
-                      pattern: {
-                        value: /^(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?$/,
-                        message: "Invalid image URL"
-                      }
-                    })}
-      type="url"
-      placeholder="Enter image URL (e.g., https://example.com/image.jpg)"
-    //   onChange={handleImageUrlChange}
-      className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-slate-500 focus:outline-none focus:border-pink-500/50 transition-all"
-       
-    />
-  </div>
-  </div>  */}
-
-              {/* Role Field */}
+              {/* Role Selection - IMPORTANT */}
               <div className="flex flex-col gap-2">
                 <label htmlFor="role" className="text-sm font-semibold text-slate-300 flex items-center gap-2">
                   <Users size={16} />
@@ -302,10 +244,13 @@ const SignUp = () => {
                   className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white hover:border-pink-500/50 focus:border-pink-500/50 focus:outline-none transition-colors appearance-none cursor-pointer"
                 >
                   <option value="user" className="bg-slate-900">
-                    🎫 User
+                    👤 User - Browse and save prompts
                   </option>
                   <option value="creator" className="bg-slate-900">
-                    🎪 Creator
+                    🎨 Creator - Create and sell prompts
+                  </option>
+                   <option value="admin" className="bg-slate-900 text-yellow-400">
+                    👑 Admin - Full access (Development Only)
                   </option>
                 </select>
                 {errors.role && (
@@ -313,49 +258,16 @@ const SignUp = () => {
                 )}
               </div>
 
-              {/* Image Upload Field */}
-              {/* <div className="flex flex-col gap-2">
-                <label className="text-sm font-semibold text-slate-300 flex items-center gap-2">
-                  <Upload size={16} />
-                  Profile Image
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                    className="w-full bg-slate-900/50 border border-white/10 rounded-xl px-4 py-3 text-white file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-linear-to-r file:from-purple-600 file:to-pink-600 file:text-white file:cursor-pointer hover:file:shadow-lg transition-all"
-                  />
-                </div>
-                {previewUrl && (
-                  <div className="mt-2 flex items-center gap-4 p-3 bg-slate-800/50 rounded-xl border border-white/5">
-                    <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-purple-500">
-                      <Image
-                        src={previewUrl}
-                        alt="Profile preview"
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
-                    <div>
-                      <p className="text-sm text-white font-medium">
-                        {selectedImage?.name}
-                      </p>
-                      <p className="text-xs text-slate-400">
-                        {(selectedImage?.size / 1024).toFixed(2)} KB
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div> */}
+              
+           
 
               {/* Submit Button */}
               <button
                 type="submit"
-                disabled={isSubmitting}
+                disabled={isSubmitting || isLoading}
                 className="w-full bg-linear-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-3 px-6 rounded-xl transition-all hover:shadow-lg hover:shadow-purple-500/25 disabled:opacity-50 disabled:cursor-not-allowed mt-4"
               >
-                {isSubmitting ? (
+                {isSubmitting || isLoading ? (
                   <div className="flex items-center justify-center gap-2">
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     Creating Account...
@@ -389,18 +301,11 @@ const SignUp = () => {
             {/* Social Login Buttons */}
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button className="flex items-center justify-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-white/10 text-white py-2.5 rounded-xl transition-colors">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                </svg>
+                <FcGoogle size={25}></FcGoogle>
                 Google
               </button>
               <button className="flex items-center justify-center gap-2 bg-slate-800/50 hover:bg-slate-800 border border-white/10 text-white py-2.5 rounded-xl transition-colors">
-                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.269 2.75 1.025.8-.223 1.65-.334 2.5-.334.85 0 1.7.111 2.5.334 1.91-1.294 2.75-1.025 2.75-1.025.545 1.376.201 2.393.099 2.646.64.698 1.03 1.591 1.03 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
-                </svg>
+                <IoLogoGithub size={25} />
                 GitHub
               </button>
             </div>
