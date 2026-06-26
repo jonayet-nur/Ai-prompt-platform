@@ -1,18 +1,3 @@
-// import DashboardSidebar from '@/Components/Dashboard/DashboardSidebar'
-// import React from 'react'
-
-// const dashBoardLayout = ({ children }) => {
-//   return (
-//     <div className='flex min-h-screen'>
-//         <DashboardSidebar></DashboardSidebar>
-// <main className=''>{children}</main>
-
-//     </div>
-//   )
-// }
-
-// export default dashBoardLayout
-
 
 import DashboardSidebar from '@/Components/Dashboard/DashboardSidebar'
 import GlobalBackground from '@/Components/Globalbackground'
