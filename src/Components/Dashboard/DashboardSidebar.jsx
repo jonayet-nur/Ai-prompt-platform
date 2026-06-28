@@ -73,7 +73,7 @@ export default function DashboardSidebar({ user }) {
         return [
           { name: "Dashboard", href: "/dashboard/creator", icon: FaHome },
           { name: "Add Prompt", href: "/dashboard/creator/add-prompt", icon: FaPlus },
-          { name: "My Prompts", href: "/dashboard/creator/my-prompts", icon: FaList },
+          { name: "My Prompts", href: "/dashboard/creator/my-prompt", icon: FaList },
         ];
       
       case "user":
