@@ -10,6 +10,7 @@ import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { IoLogoGithub } from "react-icons/io";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
   const router = useRouter();
@@ -31,6 +32,8 @@ const SignUp = () => {
     },
   });
 
+
+
   const onSubmit = async (formData) => {
     try {
       setIsLoading(true);
@@ -40,38 +43,85 @@ const SignUp = () => {
         email: formData.email,
         password: formData.password,
         name: formData.name,
-        image: formData.image || "", // Make sure image is properly passed
-        role: formData.role, // This is crucial for role-based access
+        image: formData.image || "", 
+        role: formData.role, 
         callbackURL: "/login"
       });
 
       if (error) {
         console.error("Signup error:", error);
-        alert(error.message || "Signup failed. Please try again.");
+        toast.error(error.message || "Signup failed. Please try again.");
         return;
       }
 
       console.log("Signup successful:", data);
       
-      reset();
-      
-      // Show role-specific success message
       const roleMessage = formData.role === 'creator' 
         ? '🎉 Creator account created successfully! You can now add and manage prompts.'
-        : '✅ Account created successfully!';
+        : ' Account created successfully!';
       
-      alert(roleMessage);
+      // ১. প্রথমে টোস্ট মেসেজটি দেখাবে
+      toast.success(roleMessage);
       
-      // Redirect to login
-      router.push('/login');
+      // ২. ইনপুট ফর্ম রিসেট হবে
+      reset();
+      
+      // ৩. ১.৫ সেকেন্ড অপেক্ষা করে তারপর লগইন পেজে রিডাইরেক্ট করবে
+      setTimeout(() => {
+        router.push('/login');
+      }, 1500);
       
     } catch (error) {
       console.error("Unexpected error:", error);
-      alert("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
+
+
+  // const onSubmit = async (formData) => {
+  //   try {
+  //     setIsLoading(true);
+  //     console.log("Submitting form data:", formData);
+      
+  //     const { data, error } = await authClient.signUp.email({
+  //       email: formData.email,
+  //       password: formData.password,
+  //       name: formData.name,
+  //       image: formData.image || "", // Make sure image is properly passed
+  //       role: formData.role, // This is crucial for role-based access
+  //       callbackURL: "/login"
+  //     });
+
+  //     if (error) {
+  //       console.error("Signup error:", error);
+  //       toast.error(error.message || "Signup failed. Please try again.");
+  //       return;
+  //     }
+
+  //     console.log("Signup successful:", data);
+  //     toast.success('sign up successfull');
+  //     reset();
+      
+  //     // Show role-specific success message
+  //     // const roleMessage = formData.role === 'creator' 
+  //     //   // ? '🎉 Creator account created successfully! You can now add and manage prompts.'
+  //     //   : '✅ Account created successfully!';
+      
+      
+      
+  //     // Redirect to login
+  //     router.push('/login');
+      
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //     alert("An unexpected error occurred. Please try again.");
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

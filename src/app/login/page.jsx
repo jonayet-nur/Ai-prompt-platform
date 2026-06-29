@@ -7,6 +7,7 @@ import { Eye, EyeOff, Mail, Lock, LogIn, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 const Login = () => {
     const router = useRouter()
@@ -24,36 +25,68 @@ const Login = () => {
     },
   });
 
+const onSubmit = async (formData) => {
+  try {
+    console.log("Signing in with:", formData);
+    
+    const { data, error } = await authClient.signIn.email({
+      email: formData.email,
+      password: formData.password,
+      callbackURL: "/" 
+    });
 
-  const onSubmit = async (formData) => {
-    try {
-      console.log("Signing in with:", formData);
-      
-      const { data, error } = await authClient.signIn.email({
-        email: formData.email,
-        password: formData.password,
-        callbackURL: "/" // or wherever you want to redirect after login
-      });
-
-      if (error) {
-        alert(error.message || "Sign in failed. Please try again.");
-        return;
-      }
-
-      console.log("Sign in successful:", data);
-      
-      // Reset form on success
-    //   reset();
-      
-      // Redirect to dashboard or home page
-      router.push('/');
-      alert("Welcome back! You've been signed in successfully.");
-      
-    } catch (error) {
-      console.error("Unexpected error:", error);
-      alert("An unexpected error occurred. Please try again.");
+    if (error) {
+      // Shofol bhabe backend error message dekhate error.message pass korte 
+      toast.error(error.message || "Log in failed");
+      return;
     }
-  };
+
+    console.log("Sign in successful:", data);
+    
+    // 2. AGER TOAST dekabo and  TARPOR REDIRECT Korbo
+    toast.success("Welcome back! You've been signed in successfully.");
+    
+    // form reset korte chaile ekhane uncomment korte paren
+    // reset();
+    
+    router.push('/');
+    
+  } catch (error) {
+    console.error("Unexpected error:", error);
+    // 3. Catch block-eo alert er poriborte toast diye dilam
+    toast.error("An unexpected error occurred. Please try again.");
+  }
+};
+  // const onSubmit = async (formData) => {
+  //   try {
+  //     console.log("Signing in with:", formData);
+      
+  //     const { data, error } = await authClient.signIn.email({
+  //       email: formData.email,
+  //       password: formData.password,
+  //       callbackURL: "/" // or wherever you want to redirect after login
+  //     });
+
+  //     if (error) {
+  //       toast.error("Log in failed")
+  //       // alert(error.message || "Sign in failed. Please try again.");
+  //       return;
+  //     }
+
+  //     console.log("Sign in successful:", data);
+      
+  //     // Reset form on success
+  //   //   reset();
+      
+  //     // Redirect to dashboard or home page
+  //     router.push('/');
+  //     toast.success("Welcome back! You've been signed in successfully.");
+      
+  //   } catch (error) {
+  //     console.error("Unexpected error:", error);
+  //     alert("An unexpected error occurred. Please try again.");
+  //   }
+  // };
 
 
 

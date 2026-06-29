@@ -22,6 +22,7 @@ import {
 import { authClient } from "@/lib/auth-client";
 import Image from "next/image";
 import { Sparkles } from "lucide-react";
+import toast from "react-hot-toast";
 
 export default function DashboardSidebar({ user }) {
   const pathname = usePathname();
@@ -94,6 +95,7 @@ export default function DashboardSidebar({ user }) {
   const handleLogout = async () => {
     try {
       await authClient.signOut();
+      toast.success('Logout successfully')
       router.push("/");
     } catch (error) {
       console.error("Logout error:", error);
