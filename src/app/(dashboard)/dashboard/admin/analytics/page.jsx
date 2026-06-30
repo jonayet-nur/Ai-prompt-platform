@@ -1,15 +1,3 @@
-// import React from 'react'
-
-// const AdminPage = () => {
-//   return (
-//     <div>AdminPage</div>
-//   )
-// }
-
-// export default AdminPage
-
-
-
 'use client'
 
 import React, { useEffect, useState } from 'react';

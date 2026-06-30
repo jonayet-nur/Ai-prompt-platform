@@ -398,7 +398,7 @@ const Navbar = () => {
         { name: "Home", href: "/", icon: Home },
         { name: "All Prompts", href: "/all-prompt", icon: Layers },
         { name: "Dashboard", href: `/dashboard/${user?.role}`, icon: LayoutDashboard },
-        { name: "My Prompts", href: `/dashboard/${user?.role}/prompts`, icon: MessageSquare },
+        { name: "My Prompts", href: `/dashboard/${user?.role}/all-prompts`, icon: MessageSquare },
         { name: "Favorites", href: `/dashboard/${user?.role}/favorites`, icon: Star },
       ]
     : [

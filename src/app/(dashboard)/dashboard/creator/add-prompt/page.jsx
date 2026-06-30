@@ -287,6 +287,7 @@ import React, { useState } from 'react';
 import { FaUpload, FaEye, FaEyeSlash, FaTag, FaTimes, FaSpinner, FaCheckCircle } from 'react-icons/fa';
 // 🔐 Better-Auth ক্লায়েন্ট ইমপোর্ট (আপনার প্রজেক্টের সঠিক পাথ অনুযায়ী মেলান, যেমন: '@/lib/auth-client')
 import { authClient } from '@/lib/auth-client'; 
+import toast from 'react-hot-toast';
 
 const CATEGORIES = ['AI Writing', 'Code Generation', 'Image Generation', 'Marketing', 'Business', 'Education', 'Productivity', 'Creative Writing', 'Data Analysis','UI Design', 'Other'];
 const AI_TOOLS = ['ChatGPT', 'Claude', 'Midjourney', 'DALL-E', 'Stable Diffusion', 'Copilot', 'Gemini', 'Perplexity', 'Other'];
@@ -298,6 +299,10 @@ const IMGBB_API_KEY =process.env.NEXT_PUBLIC_IMAGEBB_KEY;
 export default function AddPromptForm() {
   // 1. Better-Auth থেকে সেশন এবং ইউজার ডাটা নিয়ে আসা
   const { data: session, isPending: isAuthLoading } = authClient.useSession();
+  // আপনার ফর্ম কম্পোনেন্টে এই কোড যোগ করুন ডিবাগ করার জন্য
+console.log("Full session data:", session);
+console.log("Current user ID:", session?.user?.id);
+console.log("Current user email:", session?.user?.email);
   
   const [formData, setFormData] = useState({
     title: '', description: '', content: '', category: '', aiTool: '', tags: [], difficulty: 'Beginner', visibility: 'Public', thumbnail: null
@@ -401,7 +406,7 @@ export default function AddPromptForm() {
 
       const res = await CreatePrompt(finalPromptData);
       if (res?.insertedId) {
-        alert("Prompt submitted successfully!");
+       toast.success("Prompt submitted successfully!");
         setShowSuccess(true);
         setFormData({ title: '', description: '', content: '', category: '', aiTool: '', tags: [], difficulty: 'Beginner', visibility: 'Public', thumbnail: null });
         setPreviewImage(null);

@@ -62,8 +62,8 @@ export default function DashboardSidebar({ user }) {
     switch (userRole) {
       case "admin":
         return [
-          { name: "Dashboard", href: "/dashboard/admin", icon: FaHome },
-          { name: "All Users", href: "/dashboard/admin/all-users", icon: FaUsers },
+        //   { name: "Dashboard", href: "/dashboard/admin", icon: FaHome },
+          { name: "All Users", href: "/dashboard/admin/all-user", icon: FaUsers },
           { name: "All Prompts", href: "/dashboard/admin/all-prompts", icon: FaList },
           { name: "All Payments", href: "/dashboard/admin/all-payments", icon: FaWallet },
           { name: "Reported Prompts", href: "/dashboard/admin/reported-prompts", icon: FaFlag },
