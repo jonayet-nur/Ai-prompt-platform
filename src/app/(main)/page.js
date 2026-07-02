@@ -1,6 +1,8 @@
 import Features from "@/Components/Features";
 import { HeroSection } from "@/Components/HeroSection";
+import PromptGuide from "@/Components/PromptGuide";
 import TopCreators from "@/Components/TopCreator";
+import TrendingCategories from "@/Components/TrendingCategories";
 import WhyChoosePromptHub from "@/Components/WhyChooseSection";
 
 import Image from "next/image";
@@ -9,9 +11,12 @@ export default function Home() {
   return (
     <>
   <HeroSection></HeroSection>
-  <WhyChoosePromptHub></WhyChoosePromptHub>
   <Features></Features>
+  <TrendingCategories></TrendingCategories>
+  <WhyChoosePromptHub></WhyChoosePromptHub>
   <TopCreators></TopCreators>
+  <PromptGuide></PromptGuide>
+  
     </>
     // <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
     //   <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">

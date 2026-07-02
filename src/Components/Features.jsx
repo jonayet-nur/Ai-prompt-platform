@@ -18,8 +18,8 @@ const Features = () => {
   const [featuredPrompts, setFeaturedPrompts] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    // .env ফাইলের NEXT_PUBLIC_BASE_URL ব্যবহার করে /feature-prompt এপিআই কল
+  // ১. এপিআই কলটিকে একটি আলাদা ফাংশনের ভেতরে নিয়ে আসলাম
+  const fetchFeaturedData = () => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/feature-prompt`)
       .then((res) => res.json())
       .then((data) => {
@@ -30,7 +30,26 @@ const Features = () => {
         console.error("Error fetching featured prompts:", err);
         setLoading(false);
       });
+  };
+
+  // ২. প্রথমবার পেজ লোড হলে এই ফাংশনটি স্বয়ংক্রিয়ভাবে রান করবে
+  useEffect(() => {
+    fetchFeaturedData();
   }, []);
+
+//   useEffect(() => {
+//     // .env ফাইলের NEXT_PUBLIC_BASE_URL ব্যবহার করে /feature-prompt এপিআই কল
+//     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/feature-prompt`)
+//       .then((res) => res.json())
+//       .then((data) => {
+//         setFeaturedPrompts(data);
+//         setLoading(false);
+//       })
+//       .catch((err) => {
+//         console.error("Error fetching featured prompts:", err);
+//         setLoading(false);
+//       });
+//   }, []);
 
   // ডাটা লোড হওয়ার সময় স্কিলটন বা স্পিনার লোডার
   if (loading) {
@@ -47,7 +66,7 @@ const Features = () => {
   }
 
   return (
-    <section className="bg-gray-950 py-16 px-4 sm:px-6 lg:px-8 border-b border-gray-900">
+    <section className=" py-16 px-4 sm:px-6 lg:px-8 border-b border-gray-900">
       <div className="max-w-7xl mx-auto">
         
         {/* 🎯 সেকশন হেডার ও প্রিমিয়াম টেক্সট */}
@@ -66,7 +85,7 @@ const Features = () => {
         {/* 🎴 রেসপন্সিভ গ্রিড (এপিআই থেকে আসা সর্বোচ্চ ৬টি প্রম্পট শো করবে) */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6 lg:gap-8">
           {featuredPrompts.map((prompt) => (
-            <PromptCard key={prompt._id} prompt={prompt} />
+            <PromptCard key={prompt._id} prompt={prompt}  onCopySuccess={fetchFeaturedData}/>
           ))}
         </div>
 
