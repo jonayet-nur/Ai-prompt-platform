@@ -21,7 +21,7 @@ const AllPromptsFeed = () => {
 
   useEffect(() => {
     // .env ফাইলের NEXT_PUBLIC_BASE_URL ব্যবহার করে /all-prompts এপিআই কল
-    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/all-prompts`)
+    fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/all-prompts?status=approved`)
       .then((res) => res.json())
       .then((data) => {
         setPrompts(data);
