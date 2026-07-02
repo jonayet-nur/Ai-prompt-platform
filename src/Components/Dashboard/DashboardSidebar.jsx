@@ -114,7 +114,7 @@ export default function DashboardSidebar({ user }) {
     <>
       {/* Mobile Menu Button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 p-3 bg-[#1a1030]/80 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
+        className="lg:hidden fixed top-4 right-4 z-50 p-3 bg-[#1a1030]/80 backdrop-blur-xl border border-purple-500/30 rounded-xl shadow-2xl shadow-purple-500/20 hover:shadow-purple-500/40 transition-all"
         onClick={() => setIsMobileOpen(!isMobileOpen)}
       >
         {isMobileOpen ? (
@@ -262,3 +262,9 @@ export default function DashboardSidebar({ user }) {
     </>
   );
 }
+
+
+
+
+
+
